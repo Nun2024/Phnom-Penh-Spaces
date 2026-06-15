@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Log In | Phnom Creative</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#711419",
+                        "on-surface": "#191c1d",
+                        "secondary-container": "#d5e0f8",
+                        "on-primary-fixed": "#002113",
+                        "inverse-primary": "#4edea3",
+                        "on-secondary-container": "#586377",
+                        "on-tertiary-fixed-variant": "#842225",
+                        "on-secondary-fixed": "#111c2d",
+                        "background": "#f8f9fa",
+                        "primary": "#006c49",
+                        "surface": "#f8f9fa",
+                        "secondary": "#545f73",
+                        "surface-tint": "#006c49",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-surface-variant": "#3c4a42",
+                        "on-primary-container": "#00422b",
+                        "secondary-fixed": "#d8e3fb",
+                        "primary-fixed-dim": "#4edea3",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#410005",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-error": "#ffffff",
+                        "outline": "#6c7a71",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#bbcabf",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary-container": "#fc7c78",
+                        "surface-container": "#edeeef",
+                        "tertiary-fixed-dim": "#ffb3af",
+                        "primary-container": "#10b981",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary": "#a43a3a",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary-fixed": "#ffdad7",
+                        "surface-dim": "#d9dadb",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3c475a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "48px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "container-max": "1280px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "xl": "80px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg-mobile": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .login-card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(30, 41, 59, 0.05), 0 2px 4px -2px rgba(30, 41, 59, 0.05);
+        }
+        .form-input-focus:focus {
+            outline: none;
+            border-color: #006c49;
+            box-shadow: 0 0 0 2px rgba(0, 108, 73, 0.1);
+        }
+        /* Fade in animation for the form */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar Suppression Check: Transactional page. We only use the Brand Logo as requested. -->
+<header class="fixed top-0 left-0 w-full z-50 bg-transparent h-xl flex items-center px-md md:px-lg">
+<div class="max-w-container-max mx-auto w-full">
+<span class="text-headline-md font-headline-md font-bold text-primary">Phnom Creative</span>
+</div>
+</header>
+<main class="min-h-screen flex flex-col md:flex-row">
+<!-- Left Side: Aesthetic Image -->
+<section class="hidden md:block w-1/2 h-screen sticky top-0 bg-surface-container-highest overflow-hidden">
+<div class="absolute inset-0 bg-black/10 z-10"></div>
+<img alt="Modern Creative Studio" class="w-full h-full object-cover" data-alt="A wide-angle, cinematic view of a sun-drenched modern creative studio in Phnom Penh. The space features polished concrete floors, minimalist white walls, and large industrial windows overlooking tropical greenery. Sleek wooden workstations are arranged neatly, with ergonomic chairs and high-end tech. The lighting is soft and natural, emphasizing a calm, airy, and professional urban sanctuary atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQ34BbxW1P6Yxndl9rYuD8PU7asC2mgBSkhiyfUwSExk0SIYQnZ1xlawWTY9h_QBRJrBETjWR6BnevipEDI0gik_te75So7ewmaA8ZrrLs-WmH-cmk7IEaYNSicpCdYX-Cknmys2vfntuaMWWzB3LA5z7fkNskafdaPzrS1sKgcCLFMsXCY7hPmwDxAFTeQY0BN0AU7EsOhIjD-Li7sZro9X7pYvJDxZsogMm0wwZmtCJlCdVnSsO3xHUBFZPwK6H8PGXqhlJM6Yk"/>
+<div class="absolute bottom-xl left-md z-20 max-w-md">
+<h1 class="text-white font-display-lg text-display-lg mb-sm">Find your next creative haven.</h1>
+<p class="text-white/90 text-body-lg font-body-lg">Access the most inspiring workspaces in Phnom Penh with Phnom Creative.</p>
+</div>
+</section>
+<!-- Right Side: Login Form -->
+<section class="w-full md:w-1/2 min-h-screen flex flex-col justify-center items-center px-gutter py-xl bg-surface-container-lowest">
+<div class="w-full max-w-[440px] animate-fade-in">
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Welcome back</h2>
+<p class="font-body-md text-on-surface-variant">Please enter your details to sign in to your account.</p>
+</div>
+<form action="#" class="space-y-md" method="POST">
+<!-- Email Input -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
+<input class="w-full pl-[44px] pr-md py-sm bg-surface border border-outline-variant rounded-lg font-body-md text-on-surface form-input-focus transition-all" id="email" name="email" placeholder="name@company.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+<a class="text-label-md font-label-md text-primary hover:underline transition-all" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline-variant">lock</span>
+<input class="w-full pl-[44px] pr-md py-sm bg-surface border border-outline-variant rounded-lg font-body-md text-on-surface form-input-focus transition-all" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center space-x-sm">
+<input class="w-base h-base rounded border-outline-variant text-primary focus:ring-primary transition-all cursor-pointer" id="remember" name="remember" type="checkbox"/>
+<label class="font-label-md text-label-md text-on-surface-variant cursor-pointer select-none" for="remember">Remember me for 30 days</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-[#005a3c] active:scale-[0.98] transition-all duration-200 mt-base" type="submit">
+                        Log In
+                    </button>
+</form>
+<!-- Social Login Divider -->
+<div class="relative my-lg">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant"></div>
+</div>
+<div class="relative flex justify-center text-label-sm font-label-sm">
+<span class="px-sm bg-surface-container-lowest text-on-surface-variant">OR CONTINUE WITH</span>
+</div>
+</div>
+<!-- Google Login Button (Secondary Action) -->
+<button class="w-full flex items-center justify-center space-x-sm py-sm bg-white border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-all duration-200">
+<img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf6Vxrzb29HDS2FNSKADoIy3bAHutouLYiPMREg4EbXn1TuW2qSejXjFNMU1kay7d2Fof1wHffPTvNa047oZjHBfToGkxO1lAbqPKET7HV5aZxrWHKRcmI5QcKUoENrHFI5H_MOmIOvdhwBopQumB7QrCGtBYcp5W3zawpIv3ua24TvyY4w0z9oyzBQnAPn9W6cjkQssgI8LZuzOIb6kf3QdIrpve6FTrnBM-sQegHXqzn-qoqYnbM1jvdG1pmjkUMDl5ew_TS8sM"/>
+<span>Sign in with Google</span>
+</button>
+<!-- Footer Sign Up Link -->
+<div class="mt-xl text-center">
+<p class="font-body-md text-on-surface-variant">
+                        Don't have an account? 
+                        <a class="text-primary font-bold hover:underline ml-xs" href="#">Sign Up</a>
+</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Simple Footer for transactional page -->
+<footer class="bg-surface-container-low border-t border-outline-variant py-md">
+<div class="max-w-container-max mx-auto px-md md:px-lg flex flex-col md:flex-row justify-between items-center gap-base">
+<span class="font-label-sm text-label-sm text-on-secondary-container">© 2024 Phnom Creative. All rights reserved.</span>
+<div class="flex space-x-md">
+<a class="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors" href="#">About</a>
+<a class="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors" href="#">Terms</a>
+<a class="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors" href="#">Privacy Policy</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction: Input field labels lifting/coloring (already handled by simple label above input)
+        // Adding a basic shake effect on error (simulated)
+        const loginForm = document.querySelector('form');
+        loginForm.addEventListener('submit', (e) => {
+            // Preventing actual submit for demo purposes
+            e.preventDefault();
+            console.log('Login attempt');
+        });
+
+        // Subtle parallax effect on the image for desktop
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroImage = document.querySelector('img[data-alt]');
+            if (heroImage) {
+                heroImage.style.transform = `translateY(${scrolled * 0.1}px)`;
+            }
+        });
+    </script>
+</body></html>
