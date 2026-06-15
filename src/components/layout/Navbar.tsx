@@ -16,12 +16,12 @@ export function Navbar() {
           </Link>
         </div>
         <div className="flex items-center gap-sm">
-          <button className="font-label-md text-label-md px-4 py-2 text-on-secondary-fixed-variant hover:text-primary transition-transform active:scale-90">
+          <Link href="/login" className="font-label-md text-label-md px-4 py-2 text-on-secondary-fixed-variant hover:text-primary transition-transform active:scale-90">
             Log In
-          </button>
-          <button className="font-label-md text-label-md px-6 py-2 bg-primary text-on-primary rounded-full hover:bg-opacity-90 transition-transform active:scale-90">
+          </Link>
+          <Link href="/signup" className="font-label-md text-label-md px-6 py-2 bg-primary text-on-primary rounded-full hover:bg-opacity-90 transition-transform active:scale-90">
             Sign Up
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
