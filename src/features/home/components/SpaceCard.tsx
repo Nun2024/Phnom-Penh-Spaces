@@ -1,4 +1,4 @@
-import React from 'react';
+import Link from 'next/link';
 
 export interface SpaceData {
   id: string;
@@ -15,7 +15,7 @@ interface SpaceCardProps {
 
 export function SpaceCard({ space }: SpaceCardProps) {
   return (
-    <div className="space-card group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col">
+    <div className="space-card group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col relative">
       <div className="relative aspect-video overflow-hidden bg-surface-variant">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img 
@@ -35,11 +35,14 @@ export function SpaceCard({ space }: SpaceCardProps) {
           <span className="material-symbols-outlined text-sm mr-1">location_on</span>
           {space.location}
         </p>
-        <div className="mt-auto">
-          <button className="availability-btn opacity-0 translate-y-4 transition-all duration-300 w-full py-3 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-opacity-90">
+        <Link 
+          href={`/spaces/${space.id}`}
+          className="availability-btn absolute inset-0 bg-primary/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+        >
+          <span className="text-on-primary font-label-md text-label-md px-6 py-3 border border-on-primary rounded-full hover:bg-on-primary hover:text-primary transition-colors">
             Check Availability
-          </button>
-        </div>
+          </span>
+        </Link>
       </div>
     </div>
   );
