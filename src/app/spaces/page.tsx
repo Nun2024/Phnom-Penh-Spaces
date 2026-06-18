@@ -1,56 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { spacesApi } from "@/lib/api";
 
 interface Space {
   id: string;
   name: string;
   location: string;
-  pricePerHour: number;
-  image: string;
+  price_per_hour: number;
+  images: any;
   status: "Active" | "Maintenance";
 }
 
-const INITIAL_SPACES: Space[] = [
-  {
-    id: "1",
-    name: "The Glass Studio",
-    location: "BKK1, Phnom Penh",
-    pricePerHour: 25,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCFezuFmKKRuSV9r_m9t8Qau1PU3mRQpqHtt8eHM-gAyGPYj72wUhsv23wXgM1bfyoOzZnAFy_AuWkFjX-xcR9R01CWI_-H5EXd21f1kTAbO7MKnkE6EJHER-jgelwhbPee1vs8VqS07CckRRn5odPr8nFW9zXLzZ443NVrHfMDze1N51Lt4uoLegc9ekf0pyEPM-o91Lb7R_QkuDgmZ7eCboMOgqgvV7UrgScB15pn_KmlRsPm2L_kErZVF-bzgz4bZ3Z0v-bbzyQ",
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "Industrial Loft",
-    location: "Tuol Kork, Phnom Penh",
-    pricePerHour: 35,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCZ3CMOoun7cSIcvw24UX5iobOOS2kV5tVYKmjeikcWwn6LzDxGZ674UlO1u9Jj6GKPC0ebnggu6pYlBTKvo8ZqSiH9nCBlFVOzNaTQy8gdRZKm3szxwPmExMxDmOCAULDvz4x2wUcenU4a540mo2Vczq1AnMgq21uFnLM2eWsHVCP4Z62w-oeaSb3QNS44_1QJy96tncoi-o-h255KD3VJ35gfeQ8v4sRNV-nIRUhqZC3AvrvKm6D5hwXG_bJxpLBKNUACoo-LNFI",
-    status: "Active",
-  },
-  {
-    id: "3",
-    name: "Sonic Wave Suite",
-    location: "Daun Penh, Phnom Penh",
-    pricePerHour: 50,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCHZBl0mcr4FB8opUHFHQjC_0B2mZKKgRC4TtIt7OyLPftATiPFK8J51r_07NbS4rOkl9uGMWWx0Iauezl6pQrFYhPBe2IT7p0Kyv7Fe8lFH8dwd2vMouo3xCoW7AOQi8eE62-K8PIZbEKzYVyuca5BtUJCDDYGiHMjaTlNyQZECFN3AYps8e2NmO7XJiy-X03Wr9q0DQxrZwEjVTyttSCRlo1in6H-etEgGwVgooy0dUF2EseQN7YKdcGKNADnCNkoUr-T3_IDx1k",
-    status: "Maintenance",
-  },
-  {
-    id: "4",
-    name: "Minimalist Workshop",
-    location: "BKK1, Phnom Penh",
-    pricePerHour: 15,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuApCqKB97pQMigDG4PXYMWpdEdBWZUpxDsEC7Yy5s09yBEYax2QnvJAtNsRiHwedKORP9qT5ox1IaPa_PmtammtYF1MQXwwVL_V8sgxDbUeAGX27moxj9SI2Ps4_b8-xjlXNjR-9KYzbueDPry5ziTLMUB9vBuBKftBm_AabmZbrVrRZJnj_T63FpOLMWBtRrmtnteU28Gi2E1e2IDmTXH8MORjX1atP7SRim3Gb_Sh1OBK4hyB1vwvqvxbBYC8WYjbqpLKXuGb9PU",
-    status: "Active",
-  },
-];
-
 export default function SpacesManagementPage() {
-  const [spaces, setSpaces] = useState<Space[]>(INITIAL_SPACES);
+  const [spaces, setSpaces] = useState<Space[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSpace, setEditingSpace] = useState<Space | null>(null);
@@ -59,15 +27,31 @@ export default function SpacesManagementPage() {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [pricePerHour, setPricePerHour] = useState<number>(20);
-  const [image, setImage] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [status, setStatus] = useState<"Active" | "Maintenance">("Active");
+
+  const fetchSpaces = async () => {
+    try {
+      setLoading(true);
+      const data = await spacesApi.list();
+      setSpaces(data);
+    } catch (err: any) {
+      setError(err.message || "Could not load spaces.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSpaces();
+  }, []);
 
   const openAddModal = () => {
     setEditingSpace(null);
     setName("");
     setLocation("");
     setPricePerHour(20);
-    setImage("");
+    setImageUrl("");
     setStatus("Active");
     setIsModalOpen(true);
   };
@@ -76,8 +60,11 @@ export default function SpacesManagementPage() {
     setEditingSpace(space);
     setName(space.name);
     setLocation(space.location);
-    setPricePerHour(space.pricePerHour);
-    setImage(space.image);
+    setPricePerHour(space.price_per_hour);
+    
+    const imageList = Array.isArray(space.images) ? space.images : JSON.parse(space.images || '[]');
+    setImageUrl(imageList[0] || "");
+    
     setStatus(space.status);
     setIsModalOpen(true);
   };
@@ -87,45 +74,48 @@ export default function SpacesManagementPage() {
     setEditingSpace(null);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    const defaultImage = image || "https://lh3.googleusercontent.com/aida-public/AB6AXuApCqKB97pQMigDG4PXYMWpdEdBWZUpxDsEC7Yy5s09yBEYax2QnvJAtNsRiHwedKORP9qT5ox1IaPa_PmtammtYF1MQXwwVL_V8sgxDbUeAGX27moxj9SI2Ps4_b8-xjlXNjR-9KYzbueDPry5ziTLMUB9vBuBKftBm_AabmZbrVrRZJnj_T63FpOLMWBtRrmtnteU28Gi2E1e2IDmTXH8MORjX1atP7SRim3Gb_Sh1OBK4hyB1vwvqvxbBYC8WYjbqpLKXuGb9PU";
+    const defaultImage = imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuApCqKB97pQMigDG4PXYMWpdEdBWZUpxDsEC7Yy5s09yBEYax2QnvJAtNsRiHwedKORP9qT5ox1IaPa_PmtammtYF1MQXwwVL_V8sgxDbUeAGX27moxj9SI2Ps4_b8-xjlXNjR-9KYzbueDPry5ziTLMUB9vBuBKftBm_AabmZbrVrRZJnj_T63FpOLMWBtRrmtnteU28Gi2E1e2IDmTXH8MORjX1atP7SRim3Gb_Sh1OBK4hyB1vwvqvxbBYC8WYjbqpLKXuGb9PU";
 
-    if (editingSpace) {
-      // Edit mode
-      setSpaces(
-        spaces.map((s) =>
-          s.id === editingSpace.id
-            ? { ...s, name, location, pricePerHour, image: defaultImage, status }
-            : s
-        )
-      );
-    } else {
-      // Add mode
-      const newSpace: Space = {
-        id: Date.now().toString(),
-        name,
-        location,
-        pricePerHour,
-        image: defaultImage,
-        status,
-      };
-      setSpaces([...spaces, newSpace]);
+    try {
+      if (editingSpace) {
+        // Edit mode
+        await spacesApi.update(editingSpace.id, {
+          name,
+          location,
+          price_per_hour: pricePerHour,
+          images: [defaultImage],
+          status,
+        });
+      } else {
+        // Add mode
+        await spacesApi.create({
+          name,
+          location,
+          space_type: "meeting", // Default to meeting for quick add
+          price_per_hour: pricePerHour,
+          capacity: 10,
+          description: "Quick added creative venue",
+          images: [defaultImage],
+          status,
+        });
+      }
+      closeModal();
+      fetchSpaces();
+    } catch (err: any) {
+      alert(err.message || "Failed to save space details.");
     }
-    closeModal();
   };
 
-  const toggleStatus = (id: string) => {
-    setSpaces(
-      spaces.map((s) =>
-        s.id === id
-          ? {
-              ...s,
-              status: s.status === "Active" ? "Maintenance" : "Active",
-            }
-          : s
-      )
-    );
+  const toggleStatus = async (space: Space) => {
+    const nextStatus = space.status === "Active" ? "Maintenance" : "Active";
+    try {
+      await spacesApi.update(space.id, { status: nextStatus });
+      fetchSpaces();
+    } catch (err: any) {
+      alert(err.message || "Failed to update space status.");
+    }
   };
 
   const filteredSpaces = spaces.filter(
@@ -145,15 +135,15 @@ export default function SpacesManagementPage() {
               Manage your creative venues and availability
             </p>
           </div>
-          <Link
-            href="/spaces/new"
-            className="flex items-center gap-2 bg-primary-container text-on-primary-container hover:bg-primary transition-colors duration-300 px-6 py-3 rounded-xl font-label-md font-bold custom-shadow active:scale-[0.98] text-center"
+          <button
+            onClick={openAddModal}
+            className="flex items-center gap-2 bg-primary-container text-on-primary-container hover:bg-primary hover:text-white transition-colors duration-300 px-6 py-3 rounded-xl font-label-md font-bold custom-shadow active:scale-[0.98] text-center cursor-pointer"
           >
             <span className="material-symbols-outlined" data-icon="add">
               add
             </span>
             Add New Space
-          </Link>
+          </button>
         </div>
 
         {/* Search & Filter bar (Local) */}
@@ -211,103 +201,117 @@ export default function SpacesManagementPage() {
           </div>
         </div>
 
-        {/* Spaces Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-md">
-          {filteredSpaces.map((space) => (
-            <div
-              key={space.id}
-              className="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant custom-shadow transition-all duration-300 card-hover flex flex-col"
-            >
-              <div className="relative h-56 w-full overflow-hidden">
-                <img
-                  src={space.image}
-                  alt={space.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 right-4 bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-                  ${space.pricePerHour} / hr
-                </div>
-                <div className="absolute top-4 left-4">
-                  {space.status === "Active" ? (
-                    <span className="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>{" "}
-                      Active
-                    </span>
-                  ) : (
-                    <span className="bg-white/90 backdrop-blur-sm text-tertiary px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-tertiary"></span>{" "}
-                      Maintenance
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="p-md flex-1 flex flex-col">
-                <div className="mb-4">
-                  <h3 className="font-headline-sm text-headline-sm text-on-surface">
-                    {space.name}
-                  </h3>
-                  <div className="flex items-center gap-1 text-secondary mt-1">
-                    <span className="material-symbols-outlined text-sm" data-icon="location_on">
-                      location_on
-                    </span>
-                    <span className="text-label-md">{space.location}</span>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-body-md text-on-surface-variant">Loading spaces...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-20 text-error font-body-md">{error}</div>
+        ) : (
+          /* Spaces Grid */
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-md">
+            {filteredSpaces.map((space) => {
+              const imageList = Array.isArray(space.images) ? space.images : JSON.parse(space.images || '[]');
+              const displayImage = imageList[0] || "https://lh3.googleusercontent.com/aida-public/AB6AXuApCqKB97pQMigDG4PXYMWpdEdBWZUpxDsEC7Yy5s09yBEYax2QnvJAtNsRiHwedKORP9qT5ox1IaPa_PmtammtYF1MQXwwVL_V8sgxDbUeAGX27moxj9SI2Ps4_b8-xjlXNjR-9KYzbueDPry5ziTLMUB9vBuBKftBm_AabmZbrVrRZJnj_T63FpOLMWBtRrmtnteU28Gi2E1e2IDmTXH8MORjX1atP7SRim3Gb_Sh1OBK4hyB1vwvqvxbBYC8WYjbqpLKXuGb9PU";
+
+              return (
+                <div
+                  key={space.id}
+                  className="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant custom-shadow transition-all duration-300 card-hover flex flex-col"
+                >
+                  <div className="relative h-56 w-full overflow-hidden">
+                    <img
+                      src={displayImage}
+                      alt={space.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-4 right-4 bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                      ${space.price_per_hour} / hr
+                    </div>
+                    <div className="absolute top-4 left-4">
+                      {space.status === "Active" ? (
+                        <span className="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>{" "}
+                          Active
+                        </span>
+                      ) : (
+                        <span className="bg-white/90 backdrop-blur-sm text-tertiary px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-tertiary"></span>{" "}
+                          Maintenance
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-md flex-1 flex flex-col">
+                    <div className="mb-4">
+                      <h3 className="font-headline-sm text-headline-sm text-on-surface">
+                        {space.name}
+                      </h3>
+                      <div className="flex items-center gap-1 text-secondary mt-1">
+                        <span className="material-symbols-outlined text-sm" data-icon="location_on">
+                          location_on
+                        </span>
+                        <span className="text-label-md">{space.location}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 mt-auto pt-md border-t border-outline-variant">
+                      <button
+                        onClick={() => openEditModal(space)}
+                        className="flex-1 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md hover:bg-primary-container/10 hover:text-primary transition-colors cursor-pointer"
+                      >
+                        Edit
+                      </button>
+                      <Link
+                        href={`/spaces/${space.id}`}
+                        className="flex-1 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md hover:bg-primary-container/10 hover:text-primary transition-colors text-center"
+                      >
+                        Details
+                      </Link>
+                      <button
+                        onClick={() => toggleStatus(space)}
+                        className="p-2 rounded-lg bg-surface-container-low text-secondary hover:text-primary transition-colors cursor-pointer"
+                        title="Toggle Status"
+                      >
+                        <span
+                          className="material-symbols-outlined"
+                          data-icon={space.status === "Active" ? "toggle_on" : "toggle_off"}
+                          style={{
+                            fontVariationSettings:
+                              space.status === "Active" ? "'FILL' 1" : "'FILL' 0",
+                          }}
+                        >
+                          {space.status === "Active" ? "toggle_on" : "toggle_off"}
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 mt-auto pt-md border-t border-outline-variant">
-                  <button
-                    onClick={() => openEditModal(space)}
-                    className="flex-1 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md hover:bg-primary-container/10 hover:text-primary transition-colors cursor-pointer"
-                  >
-                    Edit
-                  </button>
-                  <Link
-                    href={`/spaces/${space.id}`}
-                    className="flex-1 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md hover:bg-primary-container/10 hover:text-primary transition-colors text-center"
-                  >
-                    Details
-                  </Link>
-                  <button
-                    onClick={() => toggleStatus(space.id)}
-                    className="p-2 rounded-lg bg-surface-container-low text-secondary hover:text-primary transition-colors cursor-pointer"
-                    title="Toggle Status"
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      data-icon={space.status === "Active" ? "toggle_on" : "toggle_off"}
-                      style={{
-                        fontVariationSettings:
-                          space.status === "Active" ? "'FILL' 1" : "'FILL' 0",
-                      }}
-                    >
-                      {space.status === "Active" ? "toggle_on" : "toggle_off"}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+              );
+            })}
 
-          {/* Add New Space Empty State / Quick Entry */}
-          <Link
-            href="/spaces/new"
-            className="border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-lg group hover:border-primary-container hover:bg-primary-container/5 transition-all duration-300 min-h-[300px] text-center flex-col justify-center"
-          >
-            <div className="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4 group-hover:scale-110 transition-transform mx-auto">
-              <span
-                className="material-symbols-outlined text-3xl text-secondary group-hover:text-primary animate-pulse"
-                data-icon="add_circle"
-              >
-                add_circle
+            {/* Add New Space Empty State / Quick Entry */}
+            <Link
+              href="/spaces/new"
+              className="border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-lg group hover:border-primary-container hover:bg-primary-container/5 transition-all duration-300 min-h-[300px] text-center flex-col justify-center"
+            >
+              <div className="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4 group-hover:scale-110 transition-transform mx-auto">
+                <span
+                  className="material-symbols-outlined text-3xl text-secondary group-hover:text-primary animate-pulse"
+                  data-icon="add_circle"
+                >
+                  add_circle
+                </span>
+              </div>
+              <span className="font-headline-sm text-secondary group-hover:text-primary transition-colors block">
+                New Space
               </span>
-            </div>
-            <span className="font-headline-sm text-secondary group-hover:text-primary transition-colors block">
-              New Space
-            </span>
-            <span className="text-body-md text-outline group-hover:text-primary/70 transition-colors block">
-              Expand your venue portfolio
-            </span>
-          </Link>
-        </div>
+              <span className="text-body-md text-outline group-hover:text-primary/70 transition-colors block">
+                Expand your venue portfolio
+              </span>
+            </Link>
+          </div>
+        )}
 
         {/* Modal Dialog */}
         {isModalOpen && (
@@ -374,8 +378,8 @@ export default function SpacesManagementPage() {
                   </label>
                   <input
                     type="text"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
                     className="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-body-md"
                     placeholder="Leave blank for default"
                   />

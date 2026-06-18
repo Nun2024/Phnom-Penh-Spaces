@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { spacesApi } from "@/lib/api";
 
 type SpaceType = "podcast" | "meeting" | "gallery" | "workshop";
 
@@ -40,12 +41,29 @@ export default function CreateNewSpacePage() {
     setImages(images.filter((_, idx) => idx !== indexToRemove));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a production app, we would save to API/Database here.
-    // For demo/prototype, we redirect back to the spaces page.
-    alert(`Space "${name}" successfully created!`);
-    router.push("/spaces");
+    try {
+      await spacesApi.create({
+        name,
+        location,
+        space_type: spaceType,
+        price_per_hour: parseFloat(pricePerHour),
+        capacity: parseInt(capacity),
+        description,
+        wifi: amenities.wifi,
+        whiteboard: amenities.whiteboard,
+        ac: amenities.ac,
+        soundproofing: amenities.soundproofing,
+        natural_light: amenities.naturalLight,
+        refreshments: amenities.refreshments,
+        images,
+      });
+      alert(`Space "${name}" successfully created!`);
+      router.push("/spaces");
+    } catch (err: any) {
+      alert(err.message || 'Failed to create space.');
+    }
   };
 
   return (

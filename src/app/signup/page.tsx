@@ -1,10 +1,46 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
 import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { authApi } from '@/lib/api';
 
 export default function SignupPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await authApi.register({
+        name,
+        email,
+        password,
+        phone,
+        role: 'CLIENT' // Default client role
+      });
+
+      // Store token and user info
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+
+      // Redirect to dashboard page
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -45,8 +81,14 @@ export default function SignupPage() {
               <h1 className="text-display-lg-mobile md:text-headline-md font-headline-md text-on-surface mb-xs">Join Phnom Creative</h1>
               <p className="text-body-md font-body-md text-on-surface-variant">Start booking your perfect workspace today.</p>
             </div>
+
+            {error && (
+              <div className="mb-md p-md bg-error-container text-on-error-container border border-error rounded-lg text-body-md">
+                {error}
+              </div>
+            )}
             
-            <form className="space-y-md" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-md" onSubmit={handleSubmit}>
               {/* Full Name Field */}
               <div className="group">
                 <label className="block text-label-md font-label-md text-on-surface-variant mb-xs" htmlFor="full_name">Full Name</label>
@@ -58,6 +100,9 @@ export default function SignupPage() {
                     name="full_name" 
                     placeholder="Enter your full name" 
                     type="text" 
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
               </div>
@@ -73,6 +118,26 @@ export default function SignupPage() {
                     name="email" 
                     placeholder="you@example.com" 
                     type="email" 
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Phone Number Field */}
+              <div className="group">
+                <label className="block text-label-md font-label-md text-on-surface-variant mb-xs" htmlFor="phone">Phone Number</label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors" style={{fontSize: '20px'}}>phone</span>
+                  <input 
+                    className="w-full h-[56px] pl-[48px] pr-md bg-surface border border-outline-variant rounded-lg text-body-md font-body-md transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-outline-variant" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="+855 ..." 
+                    type="tel" 
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
               </div>
@@ -88,6 +153,9 @@ export default function SignupPage() {
                     name="password" 
                     placeholder="Min. 8 characters" 
                     type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button 
                     className="absolute right-md top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" 
@@ -101,10 +169,11 @@ export default function SignupPage() {
               
               {/* CTA Button */}
               <button 
-                className="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-on-primary-container transition-all active:scale-[0.98] flex items-center justify-center gap-xs" 
+                disabled={loading}
+                className="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-on-primary-container transition-all active:scale-[0.98] flex items-center justify-center gap-xs disabled:opacity-55 disabled:cursor-not-allowed" 
                 type="submit"
               >
-                Create Account
+                {loading ? 'Creating Account...' : 'Create Account'}
               </button>
               
               {/* Terms and Privacy Note */}

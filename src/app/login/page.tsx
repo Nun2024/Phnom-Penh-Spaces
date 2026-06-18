@@ -1,6 +1,38 @@
+"use client";
+
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { authApi } from '@/lib/api';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await authApi.login({ email, password });
+      
+      // Store token and user info
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      
+      // Redirect to dashboard page
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <main className="min-h-screen flex flex-col md:flex-row">
@@ -38,7 +70,14 @@ export default function LoginPage() {
               <h2 className="font-headline-md text-headline-md text-on-surface mb-xs">Welcome back</h2>
               <p className="font-body-md text-on-surface-variant">Please enter your details to sign in to your account.</p>
             </div>
-            <form action="#" className="space-y-md" method="POST">
+
+            {error && (
+              <div className="mb-md p-md bg-error-container text-on-error-container border border-error rounded-lg text-body-md">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-md">
               {/* Email Input */}
               <div className="space-y-xs group">
                 <label className="font-label-md text-label-md text-on-surface-variant" htmlFor="email">Email Address</label>
@@ -51,6 +90,8 @@ export default function LoginPage() {
                     placeholder="name@company.com" 
                     required 
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -70,6 +111,8 @@ export default function LoginPage() {
                     placeholder="••••••••" 
                     required 
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
@@ -87,10 +130,11 @@ export default function LoginPage() {
               
               {/* Submit Button */}
               <button 
-                className="w-full py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-[#005a3c] active:scale-[0.98] transition-all duration-200 mt-base" 
+                disabled={loading}
+                className="w-full py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-[#005a3c] active:scale-[0.98] transition-all duration-200 mt-base disabled:opacity-55 disabled:cursor-not-allowed" 
                 type="submit"
               >
-                Log In
+                {loading ? 'Logging in...' : 'Log In'}
               </button>
             </form>
             
