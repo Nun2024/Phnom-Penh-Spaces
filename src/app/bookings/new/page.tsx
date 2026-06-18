@@ -61,7 +61,7 @@ export default function NewBookingPage() {
                       Full Name
                     </label>
                     <input
-                      className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
+                      className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
                       id="full_name"
                       placeholder="e.g. Sok Hem"
                       type="text"
@@ -76,7 +76,7 @@ export default function NewBookingPage() {
                         Email Address
                       </label>
                       <input
-                        className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
+                        className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
                         id="email"
                         placeholder="client@example.com"
                         type="email"
@@ -90,7 +90,7 @@ export default function NewBookingPage() {
                         Phone Number
                       </label>
                       <input
-                        className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
+                        className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
                         id="phone"
                         placeholder="+855 ..."
                         type="tel"
@@ -118,7 +118,7 @@ export default function NewBookingPage() {
                       Select Space
                     </label>
                     <select
-                      className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all appearance-none"
+                      className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all appearance-none"
                       id="space_select"
                       value={selectedSpace}
                       onChange={(e) => setSelectedSpace(e.target.value)}
@@ -141,7 +141,7 @@ export default function NewBookingPage() {
                     </label>
                     <div className="relative">
                       <input
-                        className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
+                        className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
                         id="booking_date"
                         type="date"
                       />
@@ -156,7 +156,7 @@ export default function NewBookingPage() {
                         Start Time
                       </label>
                       <input
-                        className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
+                        className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
                         id="start_time"
                         type="time"
                       />
@@ -169,7 +169,7 @@ export default function NewBookingPage() {
                         End Time
                       </label>
                       <input
-                        className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
+                        className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
                         id="end_time"
                         type="time"
                       />
@@ -210,7 +210,7 @@ export default function NewBookingPage() {
                       Payment Status
                     </label>
                     <select
-                      className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
+                      className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all"
                       id="payment_status"
                     >
                       <option value="unpaid">Unpaid</option>
@@ -226,7 +226,7 @@ export default function NewBookingPage() {
                       Staff Notes
                     </label>
                     <textarea
-                      className="w-full rounded-lg border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all resize-none"
+                      className="w-full rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md px-md py-sm transition-all resize-none"
                       id="staff_notes"
                       placeholder="Any special requirements or setup instructions..."
                       rows={4}

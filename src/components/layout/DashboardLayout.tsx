@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   useEffect(() => {
     // Simple Micro-interaction for menu buttons
     document.querySelectorAll("button").forEach((btn) => {
@@ -13,6 +16,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       });
     });
   }, []);
+
+  const getLinkClass = (path: string, exact = false) => {
+    const active = exact ? pathname === path : pathname?.startsWith(path);
+    return active
+      ? "flex items-center gap-sm px-sm py-sm rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container-high transition-all duration-200 translate-x-1"
+      : "flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200";
+  };
+
+  const getIconStyle = (path: string, exact = false) => {
+    const active = exact ? pathname === path : pathname?.startsWith(path);
+    return {
+      fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0",
+    };
+  };
 
   return (
     <div className="bg-surface text-on-surface min-h-screen">
@@ -28,52 +45,54 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
         <nav className="flex-1 space-y-xs">
           <Link
-            className="flex items-center gap-sm px-sm py-sm rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container-high transition-transform duration-200 translate-x-1"
+            className={getLinkClass("/dashboard", true)}
             href="/dashboard"
           >
-            <span className="material-symbols-outlined" data-icon="dashboard">
+            <span className="material-symbols-outlined" data-icon="dashboard" style={getIconStyle("/dashboard", true)}>
               dashboard
             </span>
             <span className="font-label-md text-label-md">Dashboard</span>
           </Link>
           <Link
-            className="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200"
+            className={getLinkClass("/bookings")}
             href="/bookings/new"
           >
             <span
               className="material-symbols-outlined"
               data-icon="calendar_today"
+              style={getIconStyle("/bookings")}
             >
               calendar_today
             </span>
             <span className="font-label-md text-label-md">Bookings</span>
           </Link>
           <Link
-            className="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200"
+            className={getLinkClass("/spaces")}
             href="/spaces"
           >
             <span
               className="material-symbols-outlined"
               data-icon="meeting_room"
+              style={getIconStyle("/spaces")}
             >
               meeting_room
             </span>
             <span className="font-label-md text-label-md">Spaces</span>
           </Link>
           <a
-            className="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200"
+            className={getLinkClass("/analytics")}
             href="#"
           >
-            <span className="material-symbols-outlined" data-icon="bar_chart">
+            <span className="material-symbols-outlined" data-icon="bar_chart" style={getIconStyle("/analytics")}>
               bar_chart
             </span>
             <span className="font-label-md text-label-md">Analytics</span>
           </a>
           <a
-            className="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200"
+            className={getLinkClass("/settings")}
             href="#"
           >
-            <span className="material-symbols-outlined" data-icon="settings">
+            <span className="material-symbols-outlined" data-icon="settings" style={getIconStyle("/settings")}>
               settings
             </span>
             <span className="font-label-md text-label-md">Settings</span>
