@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { spaceTypesApi } from '@/lib/api';
 
 export interface HeroProps {
   onSearch?: (filters: { space_type?: string; search?: string }) => void;
@@ -74,6 +75,21 @@ export function Hero({ onSearch }: HeroProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [spaceType, setSpaceType] = useState('All Spaces');
   const [location, setLocation] = useState('Everywhere');
+  const [spaceTypeOptions, setSpaceTypeOptions] = useState<string[]>(['All Spaces']);
+
+  useEffect(() => {
+    const fetchSpaceTypes = async () => {
+      try {
+        const types = await spaceTypesApi.list();
+        if (Array.isArray(types)) {
+          setSpaceTypeOptions(['All Spaces', ...types.map((t: any) => t.name)]);
+        }
+      } catch (e) {
+        console.error('Failed to fetch space types', e);
+      }
+    };
+    fetchSpaceTypes();
+  }, []);
 
   const handleSearch = () => {
     setIsSearching(true);
@@ -123,7 +139,7 @@ export function Hero({ onSearch }: HeroProps) {
               <span className="material-symbols-outlined text-primary mr-3 text-2xl">meeting_room</span>
               <CustomSelect 
                 label="Space Type"
-                options={['All Spaces', 'Meeting Room', 'Podcast Studio', 'Art Workshop']}
+                options={spaceTypeOptions}
                 value={spaceType}
                 onChange={setSpaceType}
               />
@@ -138,18 +154,6 @@ export function Hero({ onSearch }: HeroProps) {
                 value={location}
                 onChange={setLocation}
               />
-            </div>
-            
-            {/* Date */}
-            <div className="w-full flex-1 flex items-center px-6 py-4 bg-white/90 hover:bg-white transition-colors rounded-xl md:rounded-full relative">
-              <span className="material-symbols-outlined text-primary mr-3 text-2xl">calendar_today</span>
-              <div className="text-left w-full cursor-pointer relative">
-                <p className="text-[11px] uppercase tracking-wider font-bold text-outline">Date</p>
-                <input 
-                  className="w-full bg-transparent border-none p-0 mt-1 focus:ring-0 text-body-lg font-bold text-on-surface outline-none cursor-pointer" 
-                  type="date" 
-                />
-              </div>
             </div>
             
             {/* Search Button */}

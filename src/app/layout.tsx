@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Phnom Creative",
+  title: "Creative Space",
   description: "Find and Reserve Your Next Creative Space in Phnom Penh",
 };
 

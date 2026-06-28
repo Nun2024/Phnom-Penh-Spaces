@@ -6,9 +6,9 @@ export function Footer() {
     <footer className="bg-surface-container dark:bg-surface-container-low border-t border-outline-variant">
       <div className="w-full max-w-container-max mx-auto px-gutter py-lg flex flex-col md:flex-row justify-between items-center gap-md">
         <div className="flex flex-col items-center md:items-start">
-          <span className="text-headline-sm font-headline-sm text-on-surface">Phnom Creative</span>
+          <span className="text-headline-sm font-headline-sm text-on-surface">Creative Space</span>
           <p className="font-body-md text-body-md text-on-surface-variant mt-2 text-center md:text-left">
-            © 2024 Phnom Creative. All rights reserved.
+            © 2026 Creative Space. All rights reserved.
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-md">

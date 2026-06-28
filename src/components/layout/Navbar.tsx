@@ -29,7 +29,7 @@ export function Navbar() {
   return (
     <nav className="bg-surface sticky docked full-width top-0 z-50 border-b border-outline-variant">
       <div className="flex justify-between items-center px-gutter py-4 w-full max-w-container-max mx-auto">
-        <Link href="/" className="text-headline-md font-headline-md text-primary">Phnom Creative</Link>
+        <Link href="/" className="text-headline-md font-headline-md text-primary">Creative Space</Link>
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-xl">
           <Link href="#" className="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1 transition-colors duration-200">

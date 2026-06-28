@@ -48,7 +48,7 @@ export default function SignupPage() {
 
   return (
     <>
-      <main className="min-h-screen flex flex-col md:flex-row bg-background text-on-surface font-body-md overflow-x-hidden">
+      <main className="h-screen overflow-hidden flex flex-col md:flex-row">
         {/* Left Side: Visual Anchor */}
         <section className="hidden md:flex md:w-1/2 h-screen sticky top-0 relative overflow-hidden bg-surface-container-highest">
           <div className="absolute inset-0 z-0">
@@ -66,25 +66,28 @@ export default function SignupPage() {
           </div>
         </section>
         
-        {/* Right Side: Signup Form */}
-        <section className="w-full md:w-1/2 min-h-screen flex flex-col justify-center items-center px-gutter py-xl bg-surface">
-          {/* TopNavBar Suppression Check: Transactional page. We only use the Brand Logo as requested. */}
-          <header className="absolute top-0 left-0 w-full z-50 bg-transparent h-xl flex items-center px-md md:px-lg md:hidden">
-            <div className="max-w-container-max mx-auto w-full">
-              <Link href="/" className="text-headline-md font-headline-md font-bold text-primary">Phnom Creative</Link>
-            </div>
-          </header>
-          <header className="absolute top-0 right-0 w-1/2 z-50 bg-transparent h-xl hidden md:flex items-center px-md md:px-lg">
-            <div className="max-w-container-max mx-auto w-full">
-              <Link href="/" className="text-headline-md font-headline-md font-bold text-primary">Phnom Creative</Link>
-            </div>
+        {/* Right Side: Sign Up Form */}
+        <section className="w-full md:w-1/2 h-full overflow-y-auto flex flex-col bg-surface">
+          
+          {/* Header */}
+          <header className="sticky top-0 z-50 bg-surface w-full px-gutter py-md flex justify-between items-center shrink-0">
+            <Link href="/" className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-label-md">
+              <span className="material-symbols-outlined text-lg">arrow_back</span>
+              Back to Home
+            </Link>
+            {/* Show brand name on mobile only, since left image handles desktop branding */}
+            <Link href="/" className="text-headline-sm font-headline-sm font-bold text-primary md:hidden">
+              Creative Space
+            </Link>
           </header>
 
-          <div className="w-full max-w-[440px] animate-fade-in mt-12 md:mt-0">
-            <div className="mb-xl text-center md:text-left">
-              <h1 className="text-display-lg-mobile md:text-headline-md font-headline-md text-on-surface mb-xs">Join Phnom Creative</h1>
-              <p className="text-body-md font-body-md text-on-surface-variant">Start booking your perfect workspace today.</p>
-            </div>
+          {/* Form Container */}
+          <div className="flex-1 flex flex-col justify-center items-center px-gutter py-md">
+            <div className="w-full max-w-[440px] animate-fade-in">
+              <div className="mb-xl text-center md:text-left">
+                <h1 className="text-display-lg-mobile md:text-headline-md font-headline-md text-on-surface mb-xs">Join Creative Space</h1>
+                <p className="text-body-md font-body-md text-on-surface-variant">Start booking your perfect workspace today.</p>
+              </div>
 
             {error && (
               <div className="mb-md p-md bg-error-container text-on-error-container border border-error rounded-lg text-body-md">
@@ -188,28 +191,18 @@ export default function SignupPage() {
               </p>
             </form>
             
-            {/* Footer: Already have an account? */}
-            <div className="mt-xl text-center">
-              <p className="text-body-md font-body-md text-on-surface-variant">
-                Already have an account? 
-                <Link className="text-primary font-label-md text-label-md hover:underline transition-all ml-1" href="/login">Log In</Link>
-              </p>
             </div>
+          </div>
+
+          {/* Footer Area */}
+          <div className="w-full p-md shrink-0 text-center">
+            <p className="text-body-md font-body-md text-on-surface-variant">
+              Already have an account? 
+              <Link className="text-primary font-label-md text-label-md hover:underline transition-all ml-1" href="/login">Log In</Link>
+            </p>
           </div>
         </section>
       </main>
-      
-      {/* Footer (Standard Shared Component) */}
-      <footer className="bg-surface-container-low border-t border-outline-variant py-md">
-        <div className="max-w-container-max mx-auto px-md md:px-lg flex flex-col md:flex-row justify-between items-center gap-base">
-          <span className="font-label-sm text-label-sm text-on-secondary-container">© 2024 Phnom Creative. All rights reserved.</span>
-          <div className="flex space-x-md">
-            <Link className="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors" href="#">About</Link>
-            <Link className="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors" href="#">Terms</Link>
-            <Link className="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors" href="#">Privacy Policy</Link>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }

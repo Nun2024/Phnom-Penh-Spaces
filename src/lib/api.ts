@@ -53,11 +53,13 @@ export const authApi = {
 
 // Spaces API Helper Functions
 export const spacesApi = {
-  list: (params?: { search?: string; space_type?: string; status?: string }) => {
+  list: (params?: { search?: string; space_type?: string; status?: string; limit?: number; offset?: number }) => {
     const query = new URLSearchParams();
     if (params?.search) query.append('search', params.search);
     if (params?.space_type) query.append('space_type', params.space_type);
     if (params?.status) query.append('status', params.status);
+    if (params?.limit !== undefined) query.append('limit', params.limit.toString());
+    if (params?.offset !== undefined) query.append('offset', params.offset.toString());
     
     const queryString = query.toString();
     const endpoint = queryString ? `spaces?${queryString}` : 'spaces';
@@ -74,4 +76,10 @@ export const bookingsApi = {
   list: () => apiRequest('bookings', 'GET'),
   create: (data: any) => apiRequest('bookings', 'POST', data),
   update: (id: string, data: any) => apiRequest(`bookings/${id}`, 'PUT', data),
+};
+
+// Space Types API Helper Functions
+export const spaceTypesApi = {
+  list: () => apiRequest('space-types', 'GET'),
+  get: (id: string) => apiRequest(`space-types/${id}`, 'GET'),
 };
