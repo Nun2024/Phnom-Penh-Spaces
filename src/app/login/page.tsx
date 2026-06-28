@@ -24,8 +24,12 @@ export default function LoginPage() {
       localStorage.setItem('auth_token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       
-      // Redirect to dashboard page
-      router.push('/dashboard');
+      // Redirect based on role
+      if (response.user.role === 'ADMIN') {
+        router.push('/dashboard');
+      } else {
+        router.push('/');
+      }
     } catch (err: any) {
       setError(err.message || 'Invalid credentials. Please try again.');
     } finally {

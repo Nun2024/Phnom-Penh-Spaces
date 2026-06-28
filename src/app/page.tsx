@@ -14,35 +14,36 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchSpaces = async () => {
-      try {
-        const data = await spacesApi.list({ status: "Active" });
-        // Map database space objects to SpaceData structure expected by SpaceCard
-        const mappedSpaces = data.map((space: any) => ({
-          id: space.id,
-          title: space.name,
-          location: space.location,
-          price: `$${parseFloat(space.price_per_hour).toFixed(2)}`,
-          imageSrc: Array.isArray(space.images) ? space.images[0] : (JSON.parse(space.images || '[]')[0] || "https://lh3.googleusercontent.com/aida-public/AB6AXuApCqKB97pQMigDG4PXYMWpdEdBWZUpxDsEC7Yy5s09yBEYax2QnvJAtNsRiHwedKORP9qT5ox1IaPa_PmtammtYF1MQXwwVL_V8sgxDbUeAGX27moxj9SI2Ps4_b8-xjlXNjR-9KYzbueDPry5ziTLMUB9vBuBKftBm_AabmZbrVrRZJnj_T63FpOLMWBtRrmtnteU28Gi2E1e2IDmTXH8MORjX1atP7SRim3Gb_Sh1OBK4hyB1vwvqvxbBYC8WYjbqpLKXuGb9PU"),
-          imageAlt: space.name,
-        }));
-        setSpaces(mappedSpaces);
-      } catch (err: any) {
-        setError("Could not load creative spaces. Please try again later.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchSpaces = async (filters?: { space_type?: string; search?: string }) => {
+    try {
+      setLoading(true);
+      const data = await spacesApi.list({ status: "Active", ...filters });
+      // Map database space objects to SpaceData structure expected by SpaceCard
+      const mappedSpaces = data.map((space: any) => ({
+        id: space.id,
+        title: space.name,
+        location: space.location,
+        price: `$${parseFloat(space.price_per_hour).toFixed(2)}`,
+        imageSrc: Array.isArray(space.images) ? space.images[0] : (JSON.parse(space.images || '[]')[0] || "https://lh3.googleusercontent.com/aida-public/AB6AXuApCqKB97pQMigDG4PXYMWpdEdBWZUpxDsEC7Yy5s09yBEYax2QnvJAtNsRiHwedKORP9qT5ox1IaPa_PmtammtYF1MQXwwVL_V8sgxDbUeAGX27moxj9SI2Ps4_b8-xjlXNjR-9KYzbueDPry5ziTLMUB9vBuBKftBm_AabmZbrVrRZJnj_T63FpOLMWBtRrmtnteU28Gi2E1e2IDmTXH8MORjX1atP7SRim3Gb_Sh1OBK4hyB1vwvqvxbBYC8WYjbqpLKXuGb9PU"),
+        imageAlt: space.name,
+      }));
+      setSpaces(mappedSpaces);
+    } catch (err: any) {
+      setError("Could not load creative spaces. Please try again later.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchSpaces();
   }, []);
 
   return (
     <>
       <Navbar />
-      <Hero />
+      <Hero onSearch={fetchSpaces} />
       
       <HowItWorksSection />
 

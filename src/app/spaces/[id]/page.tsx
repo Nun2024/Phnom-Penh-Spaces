@@ -2,25 +2,29 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { spacesApi, bookingsApi } from '@/lib/api';
 
-const DAYS = [
-  { short: 'MON', date: '12' },
-  { short: 'TUE', date: '13' },
-  { short: 'WED', date: '14' },
-  { short: 'THU', date: '15' },
-  { short: 'FRI', date: '16' },
-  { short: 'SAT', date: '17' },
-  { short: 'SUN', date: '18' },
+const DEFAULT_DAYS = [
+  { short: 'MON', date: '12', fullDate: '2024-05-12', isPastDay: false, isToday: false },
+  { short: 'TUE', date: '13', fullDate: '2024-05-13', isPastDay: false, isToday: false },
+  { short: 'WED', date: '14', fullDate: '2024-05-14', isPastDay: false, isToday: false },
+  { short: 'THU', date: '15', fullDate: '2024-05-15', isPastDay: false, isToday: false },
+  { short: 'FRI', date: '16', fullDate: '2024-05-16', isPastDay: false, isToday: false },
+  { short: 'SAT', date: '17', fullDate: '2024-05-17', isPastDay: false, isToday: false },
+  { short: 'SUN', date: '18', fullDate: '2024-05-18', isPastDay: false, isToday: false },
 ];
 
 const TIMES = [
   '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
 ];
 
-export default function BookingPage({ params }: { params: { id: string } }) {
+export default function BookingPage() {
+  const params = useParams();
+  const id = params?.id as string;
+
   const [space, setSpace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,6 +38,15 @@ export default function BookingPage({ params }: { params: { id: string } }) {
   const [clientPhone, setClientPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  
+  // Booked Slots
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  
+  // Calendar state
+  const [calendarDays, setCalendarDays] = useState(DEFAULT_DAYS);
+  const [currentWeekString, setCurrentWeekString] = useState('May 12 - May 18, 2024');
+  const [currentHour, setCurrentHour] = useState(-1);
+  const [weekOffset, setWeekOffset] = useState(0);
 
   useEffect(() => {
     // Load pre-filled user details if logged in
@@ -50,11 +63,41 @@ export default function BookingPage({ params }: { params: { id: string } }) {
         }
       }
     }
+    
+    // If it's Sunday and past 16:00, default to next week
+    const now = new Date();
+    if (now.getDay() === 0 && now.getHours() >= 17) {
+      setWeekOffset(1);
+    }
 
     const fetchSpaceDetails = async () => {
+      if (!id) return;
       try {
-        const data = await spacesApi.get(params.id);
+        const data = await spacesApi.get(id);
         setSpace(data);
+        
+        // Fetch existing bookings to block out taken slots
+        try {
+          const spaceBookings = await spacesApi.bookings(id);
+          
+          const slots: string[] = [];
+          spaceBookings.forEach((b: any) => {
+            if (b.selected_slots) {
+              let parsed = [];
+              try {
+                parsed = typeof b.selected_slots === 'string' ? JSON.parse(b.selected_slots) : b.selected_slots;
+              } catch (e) {
+                parsed = [];
+              }
+              if (Array.isArray(parsed)) {
+                slots.push(...parsed);
+              }
+            }
+          });
+          setBookedSlots(slots);
+        } catch (bookingErr) {
+          console.error("Could not fetch bookings", bookingErr);
+        }
       } catch (err: any) {
         setError(err.message || 'Could not load space details.');
       } finally {
@@ -63,10 +106,46 @@ export default function BookingPage({ params }: { params: { id: string } }) {
     };
 
     fetchSpaceDetails();
-  }, [params.id]);
+  }, [id]);
 
-  const toggleSlot = (day: string, time: string) => {
-    const slotId = `${day}-${time}`;
+  useEffect(() => {
+    // Initialize dynamic calendar dates based on weekOffset
+    const now = new Date();
+    setCurrentHour(now.getHours());
+    
+    const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1; 
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - dayOfWeek + (weekOffset * 7));
+    monday.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const short = d.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+      const date = d.getDate().toString().padStart(2, '0');
+      // Fix for timezone to get strict local ISO string format YYYY-MM-DD
+      const fullDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      
+      const isPastDay = d.getTime() < today.getTime();
+      const isToday = d.getTime() === today.getTime();
+      
+      days.push({ short, date, fullDate, isPastDay, isToday });
+    }
+    setCalendarDays(days);
+    
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const monthMon = monday.toLocaleDateString('en-US', { month: 'short' });
+    const monthSun = sunday.toLocaleDateString('en-US', { month: 'short' });
+    setCurrentWeekString(`${monthMon} ${monday.getDate()} - ${monthSun} ${sunday.getDate()}, ${sunday.getFullYear()}`);
+  }, [weekOffset]);
+
+  const toggleSlot = (fullDate: string, time: string) => {
+    const slotId = `${fullDate}_${time}`;
     if (selectedSlots.includes(slotId)) {
       setSelectedSlots(selectedSlots.filter(id => id !== slotId));
     } else {
@@ -89,23 +168,24 @@ export default function BookingPage({ params }: { params: { id: string } }) {
       const totalAmount = subtotal + serviceFee;
 
       // Extract details for API
-      // Since booking date is required, we use the current date or first slot date
-      const today = new Date().toISOString().split('T')[0];
+      // Since booking date is required, we use the date from the first slot
+      const bookingDate = selectedSlots[0].split('_')[0];
 
       await bookingsApi.create({
-        space_id: params.id,
+        space_id: id,
         client_name: clientName,
         client_email: clientEmail,
         client_phone: clientPhone,
-        booking_date: today,
-        start_time: selectedSlots[0].split('-')[1], // Just take first select
-        end_time: selectedSlots[selectedSlots.length - 1].split('-')[1],
+        booking_date: bookingDate,
+        start_time: selectedSlots[0].split('_')[1], // Extract time
+        end_time: selectedSlots[selectedSlots.length - 1].split('_')[1],
         selected_slots: selectedSlots,
         total_price: totalAmount,
         service_fee: serviceFee,
       });
 
       setSuccessMsg('Reservation submitted successfully!');
+      setBookedSlots(prev => [...prev, ...selectedSlots]);
       setSelectedSlots([]);
     } catch (err: any) {
       setError(err.message || 'Failed to submit reservation. Please try again.');
@@ -171,11 +251,16 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                 <p className="text-body-md font-body-md text-on-surface-variant">Select your preferred time slots to reserve the space.</p>
               </div>
               <div className="flex items-center gap-sm bg-surface-container-low p-xs rounded-lg border border-outline-variant">
-                <button className="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+                <button 
+                  onClick={() => setWeekOffset(prev => prev - 1)}
+                  disabled={weekOffset === 0}
+                  className="p-2 hover:bg-surface-container-high rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
                   <span className="material-symbols-outlined text-on-surface-variant">chevron_left</span>
                 </button>
-                <span className="text-label-md font-label-md px-md hidden sm:inline">May 12 - May 18, 2024</span>
-                <button className="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+                <span className="text-label-md font-label-md px-md hidden sm:inline">{currentWeekString}</span>
+                <button 
+                  onClick={() => setWeekOffset(prev => prev + 1)}
+                  className="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
                   <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
                 </button>
               </div>
@@ -185,10 +270,10 @@ export default function BookingPage({ params }: { params: { id: string } }) {
               {/* Calendar Header */}
               <div className="grid grid-cols-8 border-b border-outline-variant bg-surface-container-low min-w-[600px] md:min-w-0">
                 <div className="h-12 border-r border-outline-variant"></div>
-                {DAYS.map((day, idx) => (
-                  <div key={day.short} className={`h-12 flex flex-col items-center justify-center ${idx !== DAYS.length - 1 ? 'border-r border-outline-variant' : ''} ${day.short === 'THU' ? 'bg-primary-container/10' : ''}`}>
-                    <span className={`text-label-sm font-label-sm ${day.short === 'THU' ? 'text-primary' : 'text-on-surface-variant'}`}>{day.short}</span>
-                    <span className={`text-label-md font-label-md font-bold ${day.short === 'THU' ? 'text-primary' : ''}`}>{day.date}</span>
+                {calendarDays.map((day, idx) => (
+                  <div key={day.short} className={`h-12 flex flex-col items-center justify-center ${idx !== calendarDays.length - 1 ? 'border-r border-outline-variant' : ''} ${day.isToday ? 'bg-primary-container/20' : ''}`}>
+                    <span className={`text-label-sm font-label-sm ${day.isToday ? 'text-primary' : 'text-on-surface-variant'}`}>{day.short}</span>
+                    <span className={`text-label-md font-label-md font-bold ${day.isToday ? 'text-primary' : ''}`}>{day.date}</span>
                   </div>
                 ))}
               </div>
@@ -200,17 +285,22 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                     <div className="p-2 text-right border-r border-outline-variant bg-surface-container-lowest">
                       <span className="text-label-sm font-label-sm text-on-surface-variant">{time}</span>
                     </div>
-                    {DAYS.map((day, idx) => {
-                      const slotId = `${day.short}-${time}`;
+                    {calendarDays.map((day, idx) => {
+                      const slotId = `${day.fullDate}_${time}`;
                       const isSelected = selectedSlots.includes(slotId);
                       
-                      // Lock a few hours for demo representation
-                      const isLocked = (time === '11:00' && day.short === 'TUE') || (time === '09:00' && day.short === 'MON');
+                      const slotHour = parseInt(time.split(':')[0], 10);
+                      const isPastTime = day.isPastDay || (day.isToday && slotHour <= currentHour);
+                      
+                      // Lock slots that have already been booked or are in the past
+                      const isLocked = bookedSlots.includes(slotId) || isPastTime;
                       
                       if (isLocked) {
                         return (
-                          <div key={slotId} className={`h-16 ${idx !== DAYS.length - 1 ? 'border-r' : ''} border-outline-variant bg-surface-container-high cursor-not-allowed flex items-center justify-center opacity-60`}>
-                            <span className="material-symbols-outlined text-on-surface-variant text-sm">lock</span>
+                          <div key={slotId} className={`h-16 ${idx !== calendarDays.length - 1 ? 'border-r' : ''} border-outline-variant bg-surface-container-high cursor-not-allowed flex items-center justify-center opacity-40`}>
+                            <span className="material-symbols-outlined text-on-surface-variant text-sm">
+                              {bookedSlots.includes(slotId) ? 'lock' : 'block'}
+                            </span>
                           </div>
                         );
                       }
@@ -218,8 +308,8 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                       return (
                         <div 
                           key={slotId} 
-                          onClick={() => toggleSlot(day.short, time)}
-                          className={`h-16 ${idx !== DAYS.length - 1 ? 'border-r' : ''} border-outline-variant cursor-pointer transition-colors flex items-center justify-center ${
+                          onClick={() => toggleSlot(day.fullDate, time)}
+                          className={`h-16 ${idx !== calendarDays.length - 1 ? 'border-r' : ''} border-outline-variant cursor-pointer transition-colors flex items-center justify-center ${
                             isSelected 
                               ? 'bg-primary text-on-primary' 
                               : 'bg-surface hover:bg-secondary-container/20'

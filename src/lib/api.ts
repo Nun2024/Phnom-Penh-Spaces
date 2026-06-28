@@ -66,6 +66,7 @@ export const spacesApi = {
   get: (id: string) => apiRequest(`spaces/${id}`, 'GET'),
   create: (data: any) => apiRequest('spaces', 'POST', data),
   update: (id: string, data: any) => apiRequest(`spaces/${id}`, 'PUT', data),
+  bookings: (id: string) => apiRequest(`spaces/${id}/bookings`, 'GET'),
 };
 
 // Bookings API Helper Functions
