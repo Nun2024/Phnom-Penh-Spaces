@@ -335,12 +335,12 @@ export default function BookingPage() {
 
       <main className="flex-grow max-w-container-max mx-auto px-md md:px-lg py-xl w-full">
         {successMsg && (
-          <div className="mb-lg p-md bg-primary-container text-on-primary-container border border-primary rounded-xl text-body-md text-center animate-fade-in shadow-sm">
+          <div className="mb-lg p-md bg-primary-container text-white border border-primary rounded-xl text-body-md text-center animate-fade-in shadow-sm">
             {successMsg}
           </div>
         )}
         {error && (
-          <div className="mb-lg p-md bg-error-container text-on-error-container border border-error rounded-xl text-body-md text-center animate-fade-in shadow-sm">
+          <div className="mb-lg p-md bg-error-container text-white border border-error rounded-xl text-body-md text-center animate-fade-in shadow-sm">
             {error}
           </div>
         )}
@@ -548,7 +548,7 @@ export default function BookingPage() {
           {/* Right Column: Sticky Reservation Card */}
           <aside className="w-full lg:w-[35%] lg:sticky lg:top-28 pt-8 lg:pt-0">
             <div className="bg-surface/80 backdrop-blur-xl border border-outline-variant rounded-3xl overflow-hidden shadow-xl shadow-surface-container-high/50 flex flex-col relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:z-[-1]">
-              <div className="p-xl space-y-lg">
+              <div className="p-5 space-y-lg">
                 <div className="flex items-end gap-2 border-b border-outline-variant pb-md">
                   <span className="text-[40px] font-display-md text-on-surface leading-none font-bold">
                     ${pricePerHour}
@@ -562,7 +562,7 @@ export default function BookingPage() {
                       <span className="text-title-sm font-title-sm text-on-surface">
                         Selected Time
                       </span>
-                      <span className="text-label-md font-label-md bg-primary-container text-on-primary-container px-3 py-1 rounded-full border border-primary/20">
+                      <span className="text-label-md font-label-md text-white bg-primary-container text-on-primary-container px-3 py-1 rounded-full border border-primary/20">
                         {selectedSlots.length}h selected
                       </span>
                     </div>
