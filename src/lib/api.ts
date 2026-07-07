@@ -83,3 +83,8 @@ export const spaceTypesApi = {
   list: () => apiRequest('space-types', 'GET'),
   get: (id: string) => apiRequest(`space-types/${id}`, 'GET'),
 };
+
+// Dashboard API Helper Functions
+export const dashboardApi = {
+  stats: () => apiRequest('dashboard/stats', 'GET'),
+};
