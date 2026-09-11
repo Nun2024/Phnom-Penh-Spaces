@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+
 import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { dashboardApi } from "@/lib/api";
@@ -30,21 +29,39 @@ type DashboardStats = {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [reservations, setReservations] = useState<Booking[]>([]);
+  const [weeklyRevenue, setWeeklyRevenue] = useState<{day: string; revenue: number}[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const data = await dashboardApi.stats();
-        setStats(data);
+        const [statsData, reservationsData, revenueWeeklyData] = await Promise.all([
+          dashboardApi.stats(),
+          dashboardApi.reservations(),
+          dashboardApi.revenueWeekly()
+        ]);
+        setStats(statsData);
+        
+        let parsedReservations = [];
+        if (Array.isArray(reservationsData)) {
+          parsedReservations = reservationsData;
+        } else if (reservationsData?.data) {
+          parsedReservations = reservationsData.data;
+        } else if (reservationsData?.reservations) {
+          parsedReservations = reservationsData.reservations;
+        }
+        setReservations(parsedReservations);
+        
+        setWeeklyRevenue(revenueWeeklyData?.daily_breakdown || []);
       } catch (err: any) {
-        setError(err.message || 'Failed to fetch dashboard stats');
+        setError(err.message || 'Failed to fetch dashboard data');
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -128,7 +145,7 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/30">
-                {stats.upcomingReservations.map((booking) => {
+                {reservations.map((booking) => {
                   const initial = booking.client_name ? booking.client_name.substring(0, 2).toUpperCase() : '??';
                   return (
                     <tr key={booking.id} className="hover:bg-surface-container-low transition-colors group">
@@ -166,7 +183,7 @@ export default function DashboardPage() {
                     </tr>
                   );
                 })}
-                {stats.upcomingReservations.length === 0 && (
+                {reservations.length === 0 && (
                   <tr>
                     <td colSpan={6} className="px-md py-xl text-center text-on-surface-variant">
                       No upcoming reservations found.
@@ -189,10 +206,10 @@ export default function DashboardPage() {
               </select>
             </div>
             <div className="flex-1 flex items-end gap-xs py-md">
-              {stats.weeklyRevenue && stats.weeklyRevenue.length > 0 ? (
+              {weeklyRevenue && weeklyRevenue.length > 0 ? (
                 (() => {
-                  const maxRev = Math.max(...stats.weeklyRevenue.map(d => d.revenue), 1);
-                  return stats.weeklyRevenue.map((dayData, i) => {
+                  const maxRev = Math.max(...weeklyRevenue.map(d => d.revenue), 1);
+                  return weeklyRevenue.map((dayData, i) => {
                     const heightPercent = Math.max(10, (dayData.revenue / maxRev) * 100);
                     return (
                       <div key={i} className="flex-1 bg-primary-container/20 rounded-t-sm relative group" style={{ height: `${heightPercent}%` }}>

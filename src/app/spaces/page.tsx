@@ -148,7 +148,7 @@ export default function SpacesManagementPage() {
 
         {/* Search & Filter bar (Local) */}
         <div className="mb-md flex gap-md items-center">
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1 max-w-[448px]">
             <span className="absolute inset-y-0 left-3 flex items-center text-outline">
               <span className="material-symbols-outlined text-[20px]">search</span>
             </span>
@@ -312,11 +312,12 @@ export default function SpacesManagementPage() {
             </Link>
           </div>
         )}
+      </div>
 
-        {/* Modal Dialog */}
-        {isModalOpen && (
+      {/* Modal Dialog */}
+      {isModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-surface-container-lowest rounded-xl max-w-md w-full border border-outline-variant p-md shadow-lg animate-fade-in">
+            <div className="bg-surface-container-lowest rounded-xl max-w-[448px] w-full border border-outline-variant p-md shadow-lg animate-fade-in">
               <div className="flex justify-between items-center mb-md">
                 <h3 className="font-headline-sm text-headline-sm text-on-surface">
                   {editingSpace ? "Edit Space" : "Add New Space"}
@@ -418,7 +419,6 @@ export default function SpacesManagementPage() {
             </div>
           </div>
         )}
-      </div>
     </DashboardLayout>
   );
 }

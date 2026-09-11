@@ -99,12 +99,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </a>
         </nav>
         <div className="mt-auto p-sm">
-          <button className="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md flex items-center justify-center gap-xs hover:opacity-90 transition-opacity">
+          <Link href="/bookings/new" className="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md flex items-center justify-center gap-xs hover:opacity-90 transition-opacity">
             <span className="material-symbols-outlined text-[20px]" data-icon="add">
               add
             </span>
             New Booking
-          </button>
+          </Link>
           <div className="mt-md pt-md border-t border-outline-variant flex items-center gap-sm">
             <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
               <img

@@ -87,4 +87,6 @@ export const spaceTypesApi = {
 // Dashboard API Helper Functions
 export const dashboardApi = {
   stats: () => apiRequest('dashboard/stats', 'GET'),
+  reservations: () => apiRequest('dashboard/reservations', 'GET'),
+  revenueWeekly: () => apiRequest('dashboard/revenue-weekly', 'GET'),
 };

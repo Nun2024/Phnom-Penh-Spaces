@@ -48,27 +48,34 @@ export function Navbar() {
           {user ? (
             <div className="relative group">
               <button className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-container text-on-primary-container hover:opacity-90 transition-opacity">
-                <span className="material-symbols-outlined text-[20px]">person</span>
+                <span className="material-symbols-outlined text-[20px] text-white">person</span>
               </button>
               {/* Dropdown Menu on hover */}
-              <div className="absolute right-0 top-full mt-2 w-48 bg-surface border border-outline-variant rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <div className="p-4 border-b border-outline-variant">
-                  <p className="font-label-md text-on-surface truncate">{user.name}</p>
-                  <p className="font-label-sm text-on-surface-variant truncate">{user.email}</p>
+              <div className="absolute right-0 top-full mt-3 w-56 bg-surface/95 backdrop-blur-md border border-outline-variant/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out z-50">
+                <div className="p-4 mb-1">
+                  <p className="font-headline-sm text-sm font-semibold text-on-surface truncate">{user.name}</p>
+                  <p className="text-xs text-on-surface-variant truncate mt-0.5">{user.email}</p>
                 </div>
-                {user.role === 'ADMIN' && (
-                  <Link href="/dashboard" className="block px-4 py-2 text-label-md hover:bg-surface-container-low text-primary border-b border-outline-variant">
-                    Dashboard
+                
+                <div className="px-2 pb-2 flex flex-col gap-1">
+                  {user.role === 'ADMIN' && (
+                    <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium hover:bg-primary/10 text-primary rounded-xl transition-colors duration-200">
+                      <span className="material-symbols-outlined text-[20px]">dashboard</span>
+                      Dashboard
+                    </Link>
+                  )}
+                  <Link href="/profile" className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium hover:bg-surface-container-high text-on-surface rounded-xl transition-colors duration-200">
+                    <span className="material-symbols-outlined text-[20px]">account_circle</span>
+                    My Profile
                   </Link>
-                )}
-                <Link href="/profile" className="flex items-center gap-2 px-4 py-2 text-label-md hover:bg-surface-container-low text-on-surface border-b border-outline-variant transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">person</span>
-                  My Profile
-                </Link>
-                <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-label-md hover:bg-surface-container-low text-error transition-colors rounded-b-lg flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">logout</span>
-                  Log Out
-                </button>
+                  
+                  <div className="h-px bg-outline-variant/50 my-1 mx-2"></div>
+                  
+                  <button onClick={handleLogout} className="flex items-center gap-3 w-full text-left px-3 py-2.5 text-sm font-medium hover:bg-error/10 text-error rounded-xl transition-colors duration-200">
+                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                    Log Out
+                  </button>
+                </div>
               </div>
             </div>
           ) : (

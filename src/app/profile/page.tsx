@@ -56,55 +56,41 @@ export default function ProfilePage() {
           setUser(JSON.parse(storedUser));
         }
 
-        let loadedBookings: any[] = [];
+        let loadedBookings: Booking[] = [];
+        
         try {
           const profileData = await authApi.profile();
           setUser(profileData);
-          
-          // Many backends return user's bookings inside the profile response
-          if (profileData && profileData.bookings && Array.isArray(profileData.bookings)) {
+          if (profileData?.bookings && Array.isArray(profileData.bookings)) {
             loadedBookings = profileData.bookings;
           }
         } catch (err) {
-          console.error("Failed to fetch fresh profile, using cached data if available");
+          console.error("Failed to fetch profile, using cached data if available", err);
         }
 
         try {
-          // Fetch bookings for this user
           const bookingsData = await bookingsApi.list();
-          let apiBookings: any[] = [];
+          let apiBookings: Booking[] = [];
           
-          // Try to find the array in the response
           if (Array.isArray(bookingsData)) {
             apiBookings = bookingsData;
-          } else if (typeof bookingsData === 'object' && bookingsData !== null) {
-            // Check common keys
-            if (Array.isArray((bookingsData as any).items)) apiBookings = (bookingsData as any).items;
-            else if (Array.isArray((bookingsData as any).data)) apiBookings = (bookingsData as any).data;
-            else if (Array.isArray((bookingsData as any).bookings)) apiBookings = (bookingsData as any).bookings;
-            else if (Array.isArray((bookingsData as any).payload)) apiBookings = (bookingsData as any).payload;
-            else {
-              const arrayValue = Object.values(bookingsData).find(val => Array.isArray(val));
-              if (arrayValue) apiBookings = arrayValue as any[];
-            }
+          } else if (bookingsData?.data && Array.isArray(bookingsData.data)) {
+            apiBookings = bookingsData.data;
+          } else if (bookingsData?.items && Array.isArray(bookingsData.items)) {
+            apiBookings = bookingsData.items;
           }
           
-          // Combine loadedBookings and apiBookings, prioritizing apiBookings if there are any
-          // Some backends return all bookings if you're admin, or just your bookings. 
-          // We will filter by the current user's email if possible just in case it returns everything
+          // Prioritize apiBookings, fallback to loadedBookings from profile
           let combined = apiBookings.length > 0 ? apiBookings : loadedBookings;
           
           const currentUser = user || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null);
-          if (currentUser && currentUser.email && combined.length > 0) {
-            // If the backend returns all bookings, let's filter them for this user's email 
-            // just to be safe, assuming the booking has a client_email or user.email
-            const filtered = combined.filter(b => 
-              (b.client_email && b.client_email === currentUser.email) ||
-              (b.user && b.user.email === currentUser.email) ||
-              (b.user_id && b.user_id === currentUser.id)
+          if (currentUser?.email && combined.length > 0) {
+            const filtered = combined.filter((b: any) => 
+              b.client_email === currentUser.email ||
+              b.user?.email === currentUser.email ||
+              b.user_id === currentUser.id
             );
             
-            // If filtering removes everything but we had bookings, maybe they are actually all ours
             if (filtered.length > 0) {
               combined = filtered;
             }
@@ -114,7 +100,6 @@ export default function ProfilePage() {
           
         } catch (err: any) {
           console.error("Failed to fetch bookings", err);
-          // Fallback to loadedBookings if API fails
           if (loadedBookings.length > 0) {
             setBookings(loadedBookings);
           } else {
