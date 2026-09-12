@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Phnom Penh Space
 
-## Getting Started
+A modern coworking and space booking platform built with Next.js 16. This frontend application connects to the `Phnom-Penh-Spaces-api` backend to provide users with a seamless booking experience and administrators with a powerful dashboard.
 
-First, run the development server:
+## ✨ Features
+
+- **Space Discovery:** Browse available spaces, including podcasts, meeting rooms, galleries, and workshops.
+- **Booking System:** Interactive booking flow for selecting time slots and reserving spaces.
+- **User Authentication:** Secure login and signup flows for users to manage their profiles and bookings.
+- **Admin Dashboard:** A comprehensive dashboard to view occupancy rates, revenue, and upcoming reservations.
+- **Responsive Design:** Fully responsive UI built with Tailwind CSS, ensuring a great experience on mobile and desktop.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Before running the frontend, ensure you have the [Phnom Penh Spaces API](https://github.com/Nun2024/Phnom-Penh-Spaces-api) running locally. The frontend relies on the API for authentication, fetching spaces, and processing bookings.
+
+### Installation
+
+1. Clone this repository.
+2. Install the dependencies:
+
+```bash
+npm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses the Next.js App Router (`src/app`). Here is a high-level overview of the structure:
 
-## Learn More
+- **`src/app/`**: Contains the main application routes.
+  - `/spaces` - Browse and view details of specific spaces.
+  - `/bookings` - Manage and create new space bookings.
+  - `/dashboard` - Admin dashboard for analytics and management.
+  - `/login` & `/signup` - Authentication pages.
+  - `/profile` - User profile management.
+- **`src/components/`**: Reusable UI components (e.g., `Navbar`, `Footer`, `DashboardLayout`).
+- **`src/features/`**: Feature-specific components and logic (e.g., home page components).
+- **`src/lib/`**: Utility functions and API client configuration (`api.ts`).
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠 Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **UI Library:** [React 19](https://react.dev/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Language:** TypeScript
+- **Linting:** ESLint
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contributing
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+When contributing to this project, please ensure you test your changes locally against the backend API and adhere to the existing code style (run `npm run lint`).
