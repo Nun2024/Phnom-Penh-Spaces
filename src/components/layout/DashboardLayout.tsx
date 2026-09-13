@@ -126,55 +126,55 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       {/*  TopAppBar Shell  */}
-      <header className="fixed top-0 right-0 left-64 h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-md z-40">
-        <div className="flex items-center gap-lg">
-          <h2 className="text-headline-sm font-headline-sm text-on-surface">
-            Manager Dashboard
+      <header className="fixed top-0 right-0 left-64 h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-lg z-40 transition-all duration-300">
+        <div className="flex items-center gap-8">
+          <h2 className="text-title-lg font-bold text-on-surface tracking-tight">
+            Dashboard
           </h2>
-          <nav className="hidden md:flex gap-md">
+          <nav className="hidden md:flex gap-2">
             <a
-              className="text-label-md font-label-md text-primary border-b-2 border-primary pb-1"
+              className="px-4 py-2 rounded-full text-sm font-semibold bg-primary/10 text-primary transition-colors"
               href="#"
             >
               Overview
             </a>
             <a
-              className="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors"
+              className="px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
               href="#"
             >
               Reports
             </a>
             <a
-              className="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors"
+              className="px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
               href="#"
             >
               Activity
             </a>
           </nav>
         </div>
-        <div className="flex items-center gap-md">
-          <div className="relative group">
+        <div className="flex items-center gap-6">
+          <div className="relative group hidden lg:block">
             <span
-              className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant"
+              className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px] group-focus-within:text-primary transition-colors"
               data-icon="search"
             >
               search
             </span>
             <input
-              className="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-label-md focus:outline-none focus:ring-2 focus:ring-primary/20 w-64"
-              placeholder="Search reservations..."
+              className="pl-10 pr-4 py-2 bg-surface-container-low/50 border border-outline-variant/50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 w-72 transition-all placeholder:text-on-surface-variant/70"
+              placeholder="Search reservations, clients..."
               type="text"
             />
           </div>
-          <div className="flex items-center gap-sm">
-            <button className="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors relative">
-              <span className="material-symbols-outlined" data-icon="notifications">
+          <div className="flex items-center gap-2">
+            <button className="p-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-primary rounded-full transition-all duration-200 relative group">
+              <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform" data-icon="notifications">
                 notifications
               </span>
-              <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
             </button>
-            <button className="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
-              <span className="material-symbols-outlined" data-icon="help_outline">
+            <button className="p-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-primary rounded-full transition-all duration-200 group">
+              <span className="material-symbols-outlined text-[22px] group-hover:rotate-12 transition-transform" data-icon="help_outline">
                 help_outline
               </span>
             </button>
