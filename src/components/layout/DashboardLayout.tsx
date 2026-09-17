@@ -79,15 +79,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </span>
             <span className="font-label-md text-label-md">Spaces</span>
           </Link>
-          <a
+          <Link
             className={getLinkClass("/analytics")}
-            href="#"
+            href="/analytics"
           >
             <span className="material-symbols-outlined" data-icon="bar_chart" style={getIconStyle("/analytics")}>
               bar_chart
             </span>
             <span className="font-label-md text-label-md">Analytics</span>
-          </a>
+          </Link>
           <a
             className={getLinkClass("/settings")}
             href="#"
