@@ -1,10 +1,46 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { CustomDropdown } from "@/components/ui/CustomDropdown";
+import { analyticsApi } from "@/lib/api";
 
 export default function AnalysisPage() {
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [kpis, trends, utilization, heatmap, spacesPerformance] = await Promise.all([
+          analyticsApi.kpis(),
+          analyticsApi.trends(),
+          analyticsApi.utilization(),
+          analyticsApi.heatmap(),
+          analyticsApi.spacesPerformance()
+        ]);
+
+        setData({ kpis, trends, utilization, heatmap, spacesPerformance });
+      } catch (error) {
+        console.error("Error fetching analytics data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Simple loading state
+  if (isLoading || !data) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <p className="text-lg text-on-surface-variant animate-pulse">Loading Analytics Data from Backend...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <div className="p-md lg:p-8">
@@ -67,21 +103,21 @@ export default function AnalysisPage() {
               </div>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">
-                  $18,450.00
+                  ${data.kpis.totalRevenue.value.toLocaleString('en-US', {minimumFractionDigits: 2})}
                 </span>
               </div>
               <div className="mt-3 flex items-center gap-1.5">
-                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-[#ECFDF5] text-primary">
+                <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold ${data.kpis.totalRevenue.isPositive ? 'bg-[#ECFDF5] text-primary' : 'bg-red-50 text-red-600'}`}>
                   <span
                     className="material-symbols-outlined text-xs"
-                    data-icon="trending_up"
+                    data-icon={data.kpis.totalRevenue.isPositive ? "trending_up" : "trending_down"}
                   >
-                    trending_up
+                    {data.kpis.totalRevenue.isPositive ? "trending_up" : "trending_down"}
                   </span>
-                  +18.4%
+                  {data.kpis.totalRevenue.isPositive ? '+' : '-'}{data.kpis.totalRevenue.trend}%
                 </span>
                 <span className="font-label-sm text-label-sm text-on-surface-variant">
-                  vs last month
+                  {data.kpis.totalRevenue.trendLabel}
                 </span>
               </div>
             </div>

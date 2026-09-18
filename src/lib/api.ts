@@ -90,3 +90,12 @@ export const dashboardApi = {
   reservations: () => apiRequest('dashboard/reservations', 'GET'),
   revenueWeekly: () => apiRequest('dashboard/revenue-weekly', 'GET'),
 };
+
+// Analytics API Helper Functions
+export const analyticsApi = {
+  kpis: () => apiRequest('analytics/kpis', 'GET'),
+  trends: () => apiRequest('analytics/trends', 'GET'),
+  utilization: () => apiRequest('analytics/utilization', 'GET'),
+  heatmap: () => apiRequest('analytics/heatmap', 'GET'),
+  spacesPerformance: () => apiRequest('analytics/spaces-performance', 'GET'),
+};
